@@ -51,4 +51,36 @@ class ExampleClientTest {
         // actual: /something/path%3Avariable
         verify(getRequestedFor(urlEqualTo("/something/path:variable")));
     }
+
+    @Test
+    void pathVariableWithEncodedForwardSlash() {
+        client.getString("path%2Fvariable");
+
+        // actual: /something/path/variable
+        verify(getRequestedFor(urlEqualTo("/something/path%2Fvariable")));
+    }
+
+    @Test
+    void pathVariableWithEncodedColonAndForwardSlash() {
+        client.getString("a%3Apath%2Fvariable");
+
+        // actual: /something/a%3Apath/variable
+        verify(getRequestedFor(urlEqualTo("/something/a%3Apath%2Fvariable")));
+    }
+
+    @Test
+    void pathVariableWithUnencodedColonAndEncodedForwardSlash() {
+        client.getString("a:path%2Fvariable");
+
+        // actual: /something/a%3Apath%252Fvariable
+        verify(getRequestedFor(urlEqualTo("/something/a:path%2Fvariable")));
+    }
+
+    @Test
+    void pathVariableWithEncodedColonAndUnencodedForwardSlash() {
+        client.getString("a%3Apath/variable");
+
+        // actual: /something/a%253Apath/variable
+        verify(getRequestedFor(urlEqualTo("/something/a:path%2Fvariable")));
+    }
 }
